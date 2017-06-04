@@ -3,11 +3,10 @@ local reversegeo = require('reversegeo')
 
 local ts = timeseries.new('log')
 
-local args = app.request:args()
-local point = {lat = tonumber(args:get('lat')), lng = tonumber(args:get('lng'))}
+local payload = app.request:body():json()
 
-local reversegeo_point = reversegeo.reversegeo(point)
+local reversegeo_point = reversegeo.reversegeo(payload)
 
-ts:insert{location = point, reverse_geo = reversegeo_point}
+ts:insert({location = payload, reverse_geo = reversegeo_point}, payload.ts)
 
-app.response:set_status(204)
+app.response:set_status(201)
